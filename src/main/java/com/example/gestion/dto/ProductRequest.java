@@ -16,6 +16,8 @@ public class ProductRequest {
     @PositiveOrZero(message = "Le stock doit être positif ou égal à zéro")
     private int stock;
 
+    private Long categoryId;
+
     public ProductRequest() {
     }
 
@@ -49,5 +51,13 @@ public class ProductRequest {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 }

@@ -8,6 +8,9 @@ public class ProductResponse {
     private double price;
     private int stock;
 
+    private Long categoryId;
+    private String categoryName;
+
     public ProductResponse() {
     }
 
@@ -49,5 +52,20 @@ public class ProductResponse {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+    public Long getCategoryId() {
+    return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

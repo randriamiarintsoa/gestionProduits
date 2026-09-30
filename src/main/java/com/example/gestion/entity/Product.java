@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -30,6 +32,11 @@ public class Product {
     @PositiveOrZero(message = "Le stock doit être positif ou égal à zéro")
     @Column(nullable = false)
     private int stock;
+
+    // Relation plusieurs produits vers une catégorie
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     public Product() {
     }
@@ -75,5 +82,13 @@ public class Product {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
