@@ -1,6 +1,9 @@
 package com.example.gestion.service;
 
+import com.example.gestion.dto.ProductRequest;
+import com.example.gestion.dto.ProductResponse;
 import com.example.gestion.entity.Product;
+import com.example.gestion.exception.ProductNotFoundException;
 import com.example.gestion.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,55 +18,70 @@ public class ProductService {
         this.repository = repository;
     }
 
-    public List<Product> findAll() {
-        return repository.findAll();
+    public List<ProductResponse> findAll() {
+        return repository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    public Product findById(Long id) {
-
-        return repository.findById(id)
+    public ProductResponse findById(Long id) {
+        Product product = repository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Produit introuvable"
-                        )
-                );
+                        new ProductNotFoundException("Produit introuvable"));
+
+        return toResponse(product);
     }
 
-    public Product create(Product product) {
+    public ProductResponse create(ProductRequest request) {
 
-        if (product.getPrice() < 0) {
-            throw new IllegalArgumentException(
-                    "Le prix ne peut pas être négatif"
-            );
-        }
+        Product product = new Product();
 
-        if (product.getStock() < 0) {
-            throw new IllegalArgumentException(
-                    "Le stock ne peut pas être négatif"
-            );
-        }
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setStock(request.getStock());
 
-        return repository.save(product);
+        Product savedProduct = repository.save(product);
+
+        return toResponse(savedProduct);
     }
 
-    public Product update(
-            Long id,
-            Product product) {
+    public ProductResponse update(Long id, ProductRequest request) {
 
-        Product existing = findById(id);
+        Product product = repository.findById(id)
+                .orElseThrow(() ->
+                        new ProductNotFoundException("Produit introuvable"));
 
-        existing.setName(product.getName());
-        existing.setDescription(product.getDescription());
-        existing.setPrice(product.getPrice());
-        existing.setStock(product.getStock());
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setStock(request.getStock());
 
-        return repository.save(existing);
+        Product updatedProduct = repository.save(product);
+
+        return toResponse(updatedProduct);
     }
 
     public void delete(Long id) {
 
-        Product product = findById(id);
+        Product product = repository.findById(id)
+                .orElseThrow(() ->
+                        new ProductNotFoundException("Produit introuvable"));
 
         repository.delete(product);
+    }
+
+    private ProductResponse toResponse(Product product) {
+
+        ProductResponse response = new ProductResponse();
+
+        response.setId(product.getId());
+        response.setName(product.getName());
+        response.setDescription(product.getDescription());
+        response.setPrice(product.getPrice());
+        response.setStock(product.getStock());
+
+        return response;
     }
 }
