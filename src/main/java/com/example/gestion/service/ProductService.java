@@ -84,4 +84,11 @@ public class ProductService {
 
         return response;
     }
+    public List<ProductResponse> searchByName(String name) {
+
+    return repository.findByNameContainingIgnoreCase(name)
+            .stream()
+            .map(this::toResponse)
+            .toList();
+}
 }

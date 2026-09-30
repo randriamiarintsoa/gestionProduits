@@ -18,27 +18,26 @@ public class ProductController {
         this.service = service;
     }
 
-    // GET /api/products
     @GetMapping
     public List<ProductResponse> findAll() {
         return service.findAll();
     }
 
-    // GET /api/products/{id}
+    @GetMapping("/search")
+    public List<ProductResponse> search(@RequestParam String name) {
+        return service.searchByName(name);
+    }
+
     @GetMapping("/{id}")
     public ProductResponse findById(@PathVariable Long id) {
         return service.findById(id);
     }
 
-    // POST /api/products
     @PostMapping
-    public ProductResponse create(
-            @Valid @RequestBody ProductRequest request) {
-
+    public ProductResponse create(@Valid @RequestBody ProductRequest request) {
         return service.create(request);
     }
 
-    // PUT /api/products/{id}
     @PutMapping("/{id}")
     public ProductResponse update(
             @PathVariable Long id,
@@ -47,7 +46,6 @@ public class ProductController {
         return service.update(id, request);
     }
 
-    // DELETE /api/products/{id}
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);
