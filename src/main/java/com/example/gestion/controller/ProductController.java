@@ -6,6 +6,9 @@ import com.example.gestion.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 @RestController
@@ -49,5 +52,9 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);
+    }
+    @GetMapping("/page")
+    public Page<ProductResponse> findAllPaginated(Pageable pageable) {
+    return service.findAll(pageable);
     }
 }
