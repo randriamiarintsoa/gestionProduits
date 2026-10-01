@@ -3,6 +3,7 @@ package com.example.gestion.service;
 import com.example.gestion.dto.CategoryRequest;
 import com.example.gestion.dto.CategoryResponse;
 import com.example.gestion.entity.Category;
+import com.example.gestion.exception.CategoryNotFoundException;
 import com.example.gestion.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,22 +18,90 @@ public class CategoryService {
         this.repository = repository;
     }
 
+    // =========================
+    // LISTE
+    // =========================
+
     public List<CategoryResponse> findAll() {
+
         return repository.findAll()
                 .stream()
                 .map(this::toResponse)
                 .toList();
     }
 
+    // =========================
+    // RECHERCHE PAR ID
+    // =========================
+
+    public CategoryResponse findById(Long id) {
+
+        Category category = repository.findById(id)
+                .orElseThrow(() ->
+                        new CategoryNotFoundException(
+                                "Catégorie introuvable"
+                        )
+                );
+
+        return toResponse(category);
+    }
+
+    // =========================
+    // CREATION
+    // =========================
+
     public CategoryResponse create(CategoryRequest request) {
 
         Category category = new Category();
+
         category.setName(request.getName());
 
         Category savedCategory = repository.save(category);
 
         return toResponse(savedCategory);
     }
+
+    // =========================
+    // MODIFICATION
+    // =========================
+
+    public CategoryResponse update(
+            Long id,
+            CategoryRequest request) {
+
+        Category category = repository.findById(id)
+                .orElseThrow(() ->
+                        new CategoryNotFoundException(
+                                "Catégorie introuvable"
+                        )
+                );
+
+        category.setName(request.getName());
+
+        Category updatedCategory = repository.save(category);
+
+        return toResponse(updatedCategory);
+    }
+
+    // =========================
+    // SUPPRESSION
+    // =========================
+
+    public void delete(Long id) {
+
+        Category category = repository.findById(id)
+                .orElseThrow(() ->
+                        new CategoryNotFoundException(
+                                "Catégorie introuvable"
+                        )
+                );
+
+        repository.delete(category);
+    }
+
+    // =========================
+    // ENTITY → RESPONSE
+    // =========================
 
     private CategoryResponse toResponse(Category category) {
 

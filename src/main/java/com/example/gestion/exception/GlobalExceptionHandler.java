@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
@@ -54,4 +55,21 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(error);
     }
+    @ExceptionHandler(CategoryNotFoundException.class)
+        public ResponseEntity<ErrorResponse> handleCategoryNotFound(
+                CategoryNotFoundException exception,
+                HttpServletRequest request) {
+
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(error);
+        }
 }
