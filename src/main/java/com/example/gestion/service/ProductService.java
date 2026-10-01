@@ -32,7 +32,6 @@ public class ProductService {
     // =========================
 
     public List<ProductResponse> findAll() {
-
         return repository.findAll()
                 .stream()
                 .map(this::toResponse)
@@ -40,11 +39,10 @@ public class ProductService {
     }
 
     // =========================
-    // PAGINATION
+    // PAGINATION + TRI
     // =========================
 
     public Page<ProductResponse> findAll(Pageable pageable) {
-
         return repository.findAll(pageable)
                 .map(this::toResponse);
     }
@@ -54,11 +52,23 @@ public class ProductService {
     // =========================
 
     public List<ProductResponse> searchByName(String name) {
-
         return repository.findByNameContainingIgnoreCase(name)
                 .stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    // =========================
+    // RECHERCHE + PAGINATION
+    // =========================
+
+    public Page<ProductResponse> searchByName(
+            String name,
+            Pageable pageable) {
+
+        return repository
+                .findByNameContainingIgnoreCase(name, pageable)
+                .map(this::toResponse);
     }
 
     // =========================
@@ -69,7 +79,10 @@ public class ProductService {
 
         Product product = repository.findById(id)
                 .orElseThrow(() ->
-                        new ProductNotFoundException("Produit introuvable"));
+                        new ProductNotFoundException(
+                                "Produit introuvable"
+                        )
+                );
 
         return toResponse(product);
     }
@@ -87,13 +100,15 @@ public class ProductService {
         product.setPrice(request.getPrice());
         product.setStock(request.getStock());
 
-        // Association avec la catégorie
         if (request.getCategoryId() != null) {
 
             Category category = categoryRepository
                     .findById(request.getCategoryId())
                     .orElseThrow(() ->
-                            new RuntimeException("Catégorie introuvable"));
+                            new RuntimeException(
+                                    "Catégorie introuvable"
+                            )
+                    );
 
             product.setCategory(category);
         }
@@ -113,20 +128,25 @@ public class ProductService {
 
         Product product = repository.findById(id)
                 .orElseThrow(() ->
-                        new ProductNotFoundException("Produit introuvable"));
+                        new ProductNotFoundException(
+                                "Produit introuvable"
+                        )
+                );
 
         product.setName(request.getName());
         product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
         product.setStock(request.getStock());
 
-        // Modification de la catégorie
         if (request.getCategoryId() != null) {
 
             Category category = categoryRepository
                     .findById(request.getCategoryId())
                     .orElseThrow(() ->
-                            new RuntimeException("Catégorie introuvable"));
+                            new RuntimeException(
+                                    "Catégorie introuvable"
+                            )
+                    );
 
             product.setCategory(category);
 
@@ -148,7 +168,10 @@ public class ProductService {
 
         Product product = repository.findById(id)
                 .orElseThrow(() ->
-                        new ProductNotFoundException("Produit introuvable"));
+                        new ProductNotFoundException(
+                                "Produit introuvable"
+                        )
+                );
 
         repository.delete(product);
     }

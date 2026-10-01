@@ -1,7 +1,9 @@
 package com.example.gestion.controller;
 
-import com.example.gestion.entity.Category;
-import com.example.gestion.repository.CategoryRepository;
+import com.example.gestion.dto.CategoryRequest;
+import com.example.gestion.dto.CategoryResponse;
+import com.example.gestion.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,19 +12,21 @@ import java.util.List;
 @RequestMapping("/api/categories")
 public class CategoryController {
 
-    private final CategoryRepository repository;
+    private final CategoryService service;
 
-    public CategoryController(CategoryRepository repository) {
-        this.repository = repository;
+    public CategoryController(CategoryService service) {
+        this.service = service;
     }
 
     @GetMapping
-    public List<Category> findAll() {
-        return repository.findAll();
+    public List<CategoryResponse> findAll() {
+        return service.findAll();
     }
 
     @PostMapping
-    public Category create(@RequestBody Category category) {
-        return repository.save(category);
+    public CategoryResponse create(
+            @Valid @RequestBody CategoryRequest request) {
+
+        return service.create(request);
     }
 }
