@@ -4,6 +4,7 @@ import com.example.gestion.dto.ProductRequest;
 import com.example.gestion.dto.ProductResponse;
 import com.example.gestion.entity.Category;
 import com.example.gestion.entity.Product;
+import com.example.gestion.exception.CategoryNotFoundException;
 import com.example.gestion.exception.ProductNotFoundException;
 import com.example.gestion.repository.CategoryRepository;
 import com.example.gestion.repository.ProductRepository;
@@ -105,7 +106,7 @@ public class ProductService {
             Category category = categoryRepository
                     .findById(request.getCategoryId())
                     .orElseThrow(() ->
-                            new RuntimeException(
+                            new CategoryNotFoundException(
                                     "Catégorie introuvable"
                             )
                     );
@@ -143,7 +144,7 @@ public class ProductService {
             Category category = categoryRepository
                     .findById(request.getCategoryId())
                     .orElseThrow(() ->
-                            new RuntimeException(
+                            new CategoryNotFoundException(
                                     "Catégorie introuvable"
                             )
                     );
