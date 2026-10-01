@@ -72,4 +72,21 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(error);
         }
+        @ExceptionHandler(CategoryUsedException.class)
+        public ResponseEntity<ErrorResponse> handleCategoryUsed(
+                CategoryUsedException exception,
+                HttpServletRequest request) {
+
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+        }
 }

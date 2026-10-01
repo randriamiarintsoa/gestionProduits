@@ -6,6 +6,7 @@ import com.example.gestion.entity.Category;
 import com.example.gestion.exception.CategoryNotFoundException;
 import com.example.gestion.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
+import com.example.gestion.exception.CategoryUsedException;
 
 import java.util.List;
 
@@ -87,17 +88,23 @@ public class CategoryService {
     // SUPPRESSION
     // =========================
 
-    public void delete(Long id) {
+  public void delete(Long id) {
 
-        Category category = repository.findById(id)
-                .orElseThrow(() ->
-                        new CategoryNotFoundException(
-                                "Catégorie introuvable"
-                        )
-                );
+    Category category = repository.findById(id)
+            .orElseThrow(() ->
+                    new CategoryNotFoundException(
+                            "Catégorie introuvable"
+                    )
+            );
 
-        repository.delete(category);
+    if (!category.getProducts().isEmpty()) {
+        throw new CategoryUsedException(
+                "Impossible de supprimer la catégorie car elle est utilisée par des produits"
+        );
     }
+
+    repository.delete(category);
+}
 
     // =========================
     // ENTITY → RESPONSE
